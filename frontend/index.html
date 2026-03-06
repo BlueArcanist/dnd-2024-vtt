@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D 2024 VTT - Character Builder</title>
+    <style>
+        :root { --primary: #8b0000; --bg: #f4f1ea; --card: #ffffff; --accent: #d4af37; --danger: #cc0000; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .nav-buttons { text-align: center; margin-bottom: 20px; }
+        button { padding: 10px 20px; cursor: pointer; border-radius: 5px; border: none; font-weight: bold; transition: 0.2s; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-accent { background: var(--accent); color: #333; margin-left: 10px; }
+        .btn-danger { background: var(--danger); color: white; padding: 5px 10px; font-size: 0.8rem; }
+        .btn-edit { background: #444; color: white; margin-right: 10px; }
+        
+        .view-panel { display: none; background: var(--card); padding: 30px; border-radius: 12px; border: 2px solid var(--primary); margin-top: 20px; position: relative; }
+        .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+        .char-card { background: var(--card); border: 1px solid #ccc; padding: 15px; border-radius: 8px; cursor: pointer; position: relative; }
+        .delete-overlay { position: absolute; top: 10px; right: 10px; }
+
+        .form-row { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 150px; }
+        .form-group label { display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        .form-group select, .form-group input { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+        .stat-input-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .stat-input { text-align: center; }
+        .stat-input select { width: 60px; text-align: center; }
+        .selection-box { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fdfdfd; margin-bottom: 15px; }
+        .stat-box { display: flex; justify-content: space-around; background: #eee; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .stat { text-align: center; }
+        .stat span { display: block; font-size: 1.4rem; font-weight: bold; color: var(--primary); }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+        #rule-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; }
+        .modal-content { position: relative; background: #fff; width: 80%; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 12px; max-height: 80vh; overflow-y: auto; }
+        .feature-item { cursor: pointer; color: var(--primary); text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⚔️ D&D Beyond Clone</h1>
+    <div class="nav-buttons">
+        <button class="btn-main" onclick="showListView()">🏠 Karakterlerim</button>
+        <button class="btn-accent" onclick="showCreateView()">✨ Yeni Karakter Yarat</button>
+    </div>
+
+    <div id="list-view" class="char-grid"></div>
+
+    <div id="create-view" class="view-panel">
+        <span class="close-btn" onclick="showListView()">×</span>
+        <h2 id="form-title">Karakter İnşası</h2>
+        <div class="form-row">
+            <div class="form-group"><label>İsim</label><input type="text" id="new-name"></div>
+            <div class="form-group" style="flex: 0.3;"><label>Level</label><input type="number" id="new-level" value="1"></div>
+            <div class="form-group"><label>Alignment</label><select id="new-alignment"><option>Lawful Good</option><option>Neutral Good</option><option>Chaotic Good</option><option>Lawful Neutral</option><option>True Neutral</option><option>Chaotic Neutral</option><option>Lawful Evil</option><option>Neutral Evil</option><option>Chaotic Evil</option></select></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>Species</label><select id="sel-species"></select></div>
+            <div class="form-group"><label>Class</label><select id="sel-class" onchange="updateClassUI()"></select></div>
+            <div class="form-group"><label>Background</label><select id="sel-bg" onchange="updateBgUI()"></select></div>
+        </div>
+        <div class="selection-box" id="class-choice-box" style="display: none;"><label id="class-choice-label"></label><select id="sel-class-choice"></select></div>
+        <div class="selection-box">
+            <label style="color: var(--primary);"><strong>Ekipman</strong></label>
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group"><label>Zırh</label><select id="sel-armor"></select></div>
+                <div class="form-group"><label>Silah</label><select id="sel-weapon"></select></div>
+                <div class="form-group" style="flex: 0.2;"><label>Kalkan?</label><input type="checkbox" id="chk-shield" style="width: auto;"></div>
+            </div>
+        </div>
+        <div class="selection-box" id="bg-bonus-box" style="display: none;"><label>Background Stat Bonusu</label><div style="display: flex; gap: 10px;"><select id="bg-plus-2"></select><select id="bg-plus-1"></select></div></div>
+        <div class="selection-box" id="class-skill-box" style="display: none;"><label>Sınıf Yetenekleri</label><p id="skill-count-info" style="font-size: 0.8rem;"></p><div class="checkbox-group" id="skill-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div></div>
+        
+        <!-- YENİ: Büyü Seçim Paneli -->
+        <div class="selection-box" id="spellcasting-box" style="display: none;">
+            <label style="color: var(--primary);"><strong>Büyü Kitabı (Spellcasting)</strong></label>
+            <div id="cantrip-section" style="margin-top: 10px;">
+                <p id="cantrip-count-info" style="font-size: 0.8rem; font-weight: bold;"></p>
+                <div class="checkbox-group" id="cantrip-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
+            </div>
+            <div id="spell-section" style="margin-top: 15px;">
+                <p id="spell-count-info" style="font-size: 0.8rem; font-weight: bold;"></p>
+                <div class="checkbox-group" id="spell-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
+            </div>
+        </div>
+
+        <label>Standard Array Stat Dağıtımı</label>
+        <div class="stat-input-grid">
+            <div class="stat-input"><label>STR</label><select class="stat-select" id="in-str"></select></div>
+            <div class="stat-input"><label>DEX</label><select class="stat-select" id="in-dex"></select></div>
+            <div class="stat-input"><label>CON</label><select class="stat-select" id="in-con"></select></div>
+            <div class="stat-input"><label>INT</label><select class="stat-select" id="in-int"></select></div>
+            <div class="stat-input"><label>WIS</label><select class="stat-select" id="in-wis"></select></div>
+            <div class="stat-input"><label>CHA</label><select class="stat-select" id="in-cha"></select></div>
+        </div>
+        <div class="form-group"><label>Ek Diller</label><div style="display: flex; gap: 10px;"><select id="sel-lang-1"></select><select id="sel-lang-2"></select></div></div>
+        <button class="btn-main" style="width: 100%; margin-top: 20px;" onclick="submitCharacter()">KARAKTERİ KAYDET</button>
+    </div>
+
+    <div id="detail-view" class="view-panel">
+        <span class="close-btn" onclick="showListView()">×</span>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <h2 id="det-name" style="margin: 0;"></h2>
+            <div>
+                <button class="btn-edit" onclick="editCurrentCharacter()">✏️ Bilgileri Düzenle</button>
+            </div>
+        </div>
+        <p id="det-info"></p>
+        <div class="stat-box" id="det-stats"></div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; text-align: center; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+            <div><small>HP</small><div id="det-hp" style="font-size: 1.2rem; font-weight: bold;"></div></div>
+            <div><small>AC</small><div id="det-ac" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);"></div></div>
+            <div><small>INIT</small><div id="det-init" style="font-size: 1.2rem; font-weight: bold;"></div></div>
+            <div><small>PROF</small><div id="det-prof" style="font-size: 1.2rem; font-weight: bold;"></div></div>
+        </div>
+        <p><strong>Kuşanılan:</strong> <span id="det-equip"></span></p>
+        <p><strong>Diller:</strong> <span id="det-langs"></span></p>
+        <p><strong>Yetenekler:</strong> <span id="det-skills"></span></p>
+        <h3>Özellikler</h3>
+        <ul id="det-features"></ul>
+    </div>
+
+    <div id="rule-modal"><div class="modal-content"><span class="close-btn" onclick="closeRuleModal()">×</span><h2 id="rule-title"></h2><hr><div id="rule-body"></div></div></div>
+</div>
+
+<script>
+    const API_URL = "http://localhost:8000";
+    const STANDARD_ARRAY = [15, 14, 13, 12, 10, 8];
+    const LANGUAGES_STANDARD = ["Common Sign Language", "Draconic", "Dwarvish", "Elvish", "Giant", "Gnomish", "Goblin", "Halfling", "Orc"];
+    const LANGUAGES_RARE = ["Abyssal", "Celestial", "Deep Speech", "Infernal", "Primordial", "Sylvan", "Undercommon"];
+    let rulesData = null;
+    let currentCharData = null;
+
+    async function fetchRules() {
+        const res = await fetch(`${API_URL}/rules`);
+        rulesData = await res.json();
+        const fill = (id, list) => { document.getElementById(id).innerHTML = list.map(i => `<option value="${i.name}">${i.name}</option>`).join(''); };
+        fill('sel-species', rulesData.species); fill('sel-class', rulesData.classes); fill('sel-bg', rulesData.backgrounds);
+        document.getElementById('sel-armor').innerHTML = `<option value="">Zırhsız (10 + Dex)</option>` + rulesData.armors.map(a => `<option value="${a.name}">${a.name} (${a.ac})</option>`).join('');
+        document.getElementById('sel-weapon').innerHTML = rulesData.weapons.map(w => `<option value="${w.name}">${w.name} (${w.damage})</option>`).join('');
+        updateBgUI(); updateClassUI();
+    }
+
+    function initBuilder() {
+        const selects = document.querySelectorAll('.stat-select');
+        selects.forEach(sel => {
+            sel.innerHTML = `<option value="">Seç...</option>` + STANDARD_ARRAY.map(v => `<option value="${v}">${v}</option>`).join('');
+            sel.addEventListener('change', updateStatDropdowns);
+        });
+        const renderLangs = (el) => {
+            el.innerHTML = `<option value="">Seç...</option><optgroup label="Standart">${LANGUAGES_STANDARD.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup><optgroup label="Rare">${LANGUAGES_RARE.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>`;
+        };
+        renderLangs(document.getElementById('sel-lang-1')); renderLangs(document.getElementById('sel-lang-2'));
+    }
+
+    function updateStatDropdowns() {
+        const selects = Array.from(document.querySelectorAll('.stat-select'));
+        const vals = selects.map(s => s.value).filter(v => v !== "");
+        selects.forEach(s => Array.from(s.options).forEach(o => { if(o.value !== "") o.disabled = vals.includes(o.value) && s.value !== o.value; }));
+    }
+
+    function updateBgUI() {
+        const bg = rulesData.backgrounds.find(b => b.name === document.getElementById('sel-bg').value);
+        const ops = bg.ability_scores.map(s => `<option value="${s}">${s}</option>`).join('');
+        document.getElementById('bg-plus-2').innerHTML = ops; document.getElementById('bg-plus-1').innerHTML = ops;
+        document.getElementById('bg-plus-1').selectedIndex = 1;
+        document.getElementById('bg-bonus-box').style.display = 'block';
+    }
+
+    function updateClassUI() {
+        const cls = rulesData.classes.find(c => c.name === document.getElementById('sel-class').value);
+        document.getElementById('skill-count-info').innerText = `Lütfen ${cls.skill_count} yetenek seçin:`;
+        document.getElementById('skill-options').innerHTML = cls.skill_options.map(s => `<label><input type="checkbox" name="skill" value="${s}"> ${s}</label>`).join('');
+        document.getElementById('class-skill-box').style.display = 'block';
+        
+        const choiceBox = document.getElementById('class-choice-box');
+        if (cls.initial_choices) {
+            document.getElementById('class-choice-label').innerHTML = `<strong>${cls.initial_choices.name}</strong>`;
+            document.getElementById('sel-class-choice').innerHTML = cls.initial_choices.options.map(o => `<option value="${o}">${o}</option>`).join('');
+            choiceBox.style.display = 'block';
+        } else { choiceBox.style.display = 'none'; }
+
+        // Büyü Paneli Mantığı
+        const spellBox = document.getElementById('spellcasting-box');
+        if (cls.spellcasting) {
+            spellBox.style.display = 'block';
+            
+            const cantripSec = document.getElementById('cantrip-section');
+            if (cls.spellcasting.cantrips_known > 0) {
+                cantripSec.style.display = 'block';
+                document.getElementById('cantrip-count-info').innerText = `Cantrip Seçimi (${cls.spellcasting.cantrips_known} adet):`;
+                document.getElementById('cantrip-options').innerHTML = cls.spellcasting.cantrip_options.map(c => `<label><input type="checkbox" name="cantrip" value="${c}"> ${c}</label>`).join('');
+            } else { cantripSec.style.display = 'none'; }
+
+            const spellSec = document.getElementById('spell-section');
+            if (cls.spellcasting.spells_prepared > 0) {
+                spellSec.style.display = 'block';
+                document.getElementById('spell-count-info').innerText = `Seviye 1 Büyü Seçimi (${cls.spellcasting.spells_prepared} adet):`;
+                document.getElementById('spell-options').innerHTML = cls.spellcasting.spell_options.map(s => `<label><input type="checkbox" name="spell" value="${s}"> ${s}</label>`).join('');
+            } else { spellSec.style.display = 'none'; }
+        } else {
+            spellBox.style.display = 'none';
+        }
+    }
+
+    async function fetchCharacters() {
+        const res = await fetch(`${API_URL}/characters`);
+        const data = await res.json();
+        document.getElementById('list-view').innerHTML = data.reverse().map(c => `
+            <div class="char-card" onclick="showDetails('${c.Isim}')">
+                <h3>${c.Isim}</h3>
+                <p>Lvl ${c.Level} ${c.Species} ${c.Class}</p>
+                <div class="delete-overlay">
+                    <button class="btn-danger" onclick="event.stopPropagation(); deleteCharacter('${c.Isim}')">Sil</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function deleteCharacter(name) {
+        if(!confirm(`${name} isimli karakteri silmek istediğinize emin misiniz?`)) return;
+        const res = await fetch(`${API_URL}/character/${name}`, { method: 'DELETE' });
+        if(res.ok) fetchCharacters();
+    }
+
+    async function showDetails(name) {
+        const res = await fetch(`${API_URL}/character/${name}`);
+        const c = await res.json();
+        currentCharData = c;
+        document.getElementById('det-name').innerText = c.Isim;
+        document.getElementById('det-info').innerText = `Level ${c.Level} ${c.Species} ${c.Class} | ${c.Background} | ${c.Alignment}`;
+        document.getElementById('det-hp').innerText = c.HP;
+        document.getElementById('det-ac').innerText = c.Armor_Class;
+        document.getElementById('det-prof').innerText = `+${c.Proficiency_Bonus}`;
+        document.getElementById('det-langs').innerText = c.Languages;
+        document.getElementById('det-skills').innerText = c.Skills.join(', ');
+        
+        const dexTotal = (c.Base_Stats["Dexterity"] || 10) + (c.Stat_Bonuslari["Dexterity"] || 0);
+        const dexMod = Math.floor((dexTotal - 10) / 2);
+        document.getElementById('det-init').innerText = (dexMod >= 0 ? '+' : '') + dexMod;
+
+        const statsDiv = document.getElementById('det-stats');
+        statsDiv.innerHTML = '';
+        ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"].forEach(k => {
+            const total = (c.Base_Stats[k] || 10) + (c.Stat_Bonuslari[k] || 0);
+            const mod = Math.floor((total - 10) / 2);
+            statsDiv.innerHTML += `<div class="stat"><small>${k.substring(0,3).toUpperCase()}</small><span>${mod >= 0 ? '+' : ''}${mod}</span><small>(${total})</small></div>`;
+        });
+
+        const weapon = c.Equipment && c.Equipment.Weapon ? rulesData.weapons.find(w => w.name === c.Equipment.Weapon) : null;
+        document.getElementById('det-equip').innerText = `${c.Equipment ? (c.Equipment.Armor || 'Zırhsız') : 'Zırhsız'}, ${weapon ? c.Equipment.Weapon : 'Silahsız'} ${c.Equipment && c.Equipment.Shield ? '(Kalkanlı)' : ''}`;
+
+        // Büyüleri Göster
+        let spellText = "";
+        if (c.Spellcasting) {
+            if (c.Spellcasting.Cantrips && c.Spellcasting.Cantrips.length > 0) spellText += `<strong>Cantrips:</strong> ${c.Spellcasting.Cantrips.join(', ')}<br>`;
+            if (c.Spellcasting.Spells && c.Spellcasting.Spells.length > 0) spellText += `<strong>Büyüler:</strong> ${c.Spellcasting.Spells.join(', ')}`;
+        }
+        
+        const featList = document.getElementById('det-features');
+        featList.innerHTML = [...(c.Class_Features || []), `Origin Feat: ${c.Origin_Feat}`, ...(c.Species_Traits || [])].map(f => `<li class="feature-item" onclick="openRuleModal('${f}')">${f}</li>`).join('');
+        
+        if (spellText) {
+            featList.innerHTML += `<li style="margin-top: 15px; list-style: none; padding: 10px; background: #eee; border-radius: 5px;">${spellText}</li>`;
+        }
+
+        document.getElementById('list-view').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+    }
+
+    function editCurrentCharacter() {
+        const c = currentCharData;
+        showCreateView();
+        document.getElementById('form-title').innerText = `${c.Isim} Bilgilerini Güncelle`;
+        document.getElementById('new-name').value = c.Isim;
+        document.getElementById('new-name').disabled = true; // İsmi değiştiremez (anahtar veri)
+        document.getElementById('new-level').value = c.Level;
+        document.getElementById('new-alignment').value = c.Alignment;
+        document.getElementById('sel-species').value = c.Species;
+        document.getElementById('sel-class').value = c.Class;
+        updateClassUI();
+        document.getElementById('sel-bg').value = c.Background;
+        updateBgUI();
+        
+        // Statları doldur
+        ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"].forEach(k => {
+            const id = `in-${k.substring(0,3).toLowerCase()}`;
+            document.getElementById(id).value = c.Base_Stats[k];
+        });
+        updateStatDropdowns();
+    }
+
+    async function openRuleModal(name) {
+        document.getElementById('rule-modal').style.display = 'block';
+        document.getElementById('rule-title').innerText = name;
+        document.getElementById('rule-body').innerHTML = 'Yükleniyor...';
+        const res = await fetch(`${API_URL}/rule-search?name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        document.getElementById('rule-body').innerHTML = data.description ? data.description.replace(/\n/g, '<br>') : 'Bulunamadı.';
+    }
+
+    function closeRuleModal() { document.getElementById('rule-modal').style.display = 'none'; }
+
+    async function submitCharacter() {
+        const name = document.getElementById('new-name').value.trim();
+        if(!name) return alert("Lütfen bir isim girin!");
+
+        if (!document.getElementById('new-name').disabled) {
+            const resList = await fetch(`${API_URL}/characters`);
+            const currentChars = await resList.json();
+            const exists = currentChars.some(c => c.Isim.toLowerCase() === name.toLowerCase());
+            if (exists) {
+                return alert(`Hata: '${name}' isimli bir karakter zaten var! Lütfen farklı bir isim seçin.`);
+            }
+        }
+
+        const className = document.getElementById('sel-class').value;
+        const cls = rulesData.classes.find(c => c.name === className);
+
+        const skills = Array.from(document.querySelectorAll('input[name="skill"]:checked')).map(cb => cb.value);
+        if(skills.length !== cls.skill_count) return alert(`Sınıf yeteneklerini eksik veya fazla seçtiniz! (${cls.skill_count} adet olmalı)`);
+
+        let cantrips = [];
+        let spells = [];
+        if (cls.spellcasting) {
+            cantrips = Array.from(document.querySelectorAll('input[name="cantrip"]:checked')).map(cb => cb.value);
+            spells = Array.from(document.querySelectorAll('input[name="spell"]:checked')).map(cb => cb.value);
+            
+            if (cls.spellcasting.cantrips_known > 0 && cantrips.length !== cls.spellcasting.cantrips_known) {
+                return alert(`Lütfen tam olarak ${cls.spellcasting.cantrips_known} adet Cantrip seçin.`);
+            }
+            if (cls.spellcasting.spells_prepared > 0 && spells.length !== cls.spellcasting.spells_prepared) {
+                return alert(`Lütfen tam olarak ${cls.spellcasting.spells_prepared} adet Seviye 1 Büyü seçin.`);
+            }
+        }
+
+        const data = {
+            name: document.getElementById('new-name').value,
+            level: parseInt(document.getElementById('new-level').value),
+            alignment: document.getElementById('new-alignment').value,
+            species: document.getElementById('sel-species').value,
+            char_class: className,
+            background: document.getElementById('sel-bg').value,
+            languages: "Common, " + document.getElementById('sel-lang-1').value + ", " + document.getElementById('sel-lang-2').value,
+            base_stats: { Strength: parseInt(document.getElementById('in-str').value), Dexterity: parseInt(document.getElementById('in-dex').value), Constitution: parseInt(document.getElementById('in-con').value), Intelligence: parseInt(document.getElementById('in-int').value), Wisdom: parseInt(document.getElementById('in-wis').value), Charisma: parseInt(document.getElementById('in-cha').value) },
+            stat_bonuses: { [document.getElementById('bg-plus-2').value]: 2, [document.getElementById('bg-plus-1').value]: 1 },
+            chosen_skills: skills,
+            initial_class_choice: document.getElementById('sel-class-choice').value || null,
+            starting_armor: document.getElementById('sel-armor').value || null,
+            starting_weapon: document.getElementById('sel-weapon').value,
+            has_shield: document.getElementById('chk-shield').checked,
+            chosen_cantrips: cantrips,
+            chosen_spells: spells
+        };
+        const res = await fetch(`${API_URL}/character/create`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        if(res.ok) { document.getElementById('new-name').disabled = false; showListView(); }
+    }
+
+    function showListView() { document.getElementById('list-view').style.display = 'grid'; document.getElementById('create-view').style.display = 'none'; document.getElementById('detail-view').style.display = 'none'; fetchCharacters(); }
+    function showCreateView() { document.getElementById('list-view').style.display = 'none'; document.getElementById('create-view').style.display = 'block'; fetchRules(); initBuilder(); }
+    showListView();
+</script>
+</body>
+</html>

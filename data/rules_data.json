@@ -1,0 +1,119 @@
+{
+  "species": [
+    { "name": "Aasimar", "traits": ["Celestial Resistance", "Darkvision (60 ft)", "Healing Hands", "Light Bearer", "Celestial Revelation"], "size": "Medium or Small", "speed": 30 },
+    { "name": "Dragonborn", "traits": ["Draconic Ancestry", "Breath Weapon", "Damage Resistance", "Darkvision (60 ft)", "Draconic Flight"], "size": "Medium", "speed": 30 },
+    { "name": "Dwarf", "traits": ["Darkvision (120 ft)", "Dwarven Resilience", "Dwarven Toughness", "Stonecunning"], "size": "Medium", "speed": 30 },
+    { "name": "Elf", "traits": ["Darkvision (60 ft)", "Elven Lineage", "Fey Ancestry", "Keen Senses", "Trance"], "size": "Medium", "speed": 30 },
+    { "name": "Gnome", "traits": ["Darkvision (60 ft)", "Gnomish Cunning", "Gnomish Lineage"], "size": "Small", "speed": 30 },
+    { "name": "Goliath", "traits": ["Giant Ancestry", "Large Form", "Powerful Build"], "size": "Medium", "speed": 35 },
+    { "name": "Halfling", "traits": ["Brave", "Halfling Nimbleness", "Luck", "Naturally Stealthy"], "size": "Small", "speed": 30 },
+    { "name": "Human", "traits": ["Resourceful", "Skillful", "Versatile"], "size": "Medium or Small", "speed": 30 },
+    { "name": "Orc", "traits": ["Adrenaline Rush", "Darkvision (120 ft)", "Relentless Endurance"], "size": "Medium", "speed": 30 },
+    { "name": "Tiefling", "traits": ["Darkvision (60 ft)", "Fiendish Legacy", "Otherworldly Presence"], "size": "Medium or Small", "speed": 30 }
+  ],
+  "backgrounds": [
+    { "name": "Acolyte", "ability_scores": ["Intelligence", "Wisdom", "Charisma"], "feat": "Magic Initiate (Cleric)", "skills": ["Insight", "Religion"], "tool": "Calligrapher's Supplies" },
+    { "name": "Artisan", "ability_scores": ["Strength", "Dexterity", "Intelligence"], "feat": "Crafter", "skills": ["Investigation", "Persuasion"], "tool": "Artisan's Tools" },
+    { "name": "Charlatan", "ability_scores": ["Dexterity", "Constitution", "Charisma"], "feat": "Skilled", "skills": ["Deception", "Sleight of Hand"], "tool": "Forgery Kit" },
+    { "name": "Criminal", "ability_scores": ["Dexterity", "Constitution", "Intelligence"], "feat": "Alert", "skills": ["Sleight of Hand", "Stealth"], "tool": "Thieves' Tools" },
+    { "name": "Entertainer", "ability_scores": ["Strength", "Dexterity", "Charisma"], "feat": "Musician", "skills": ["Acrobatics", "Performance"], "tool": "Musical Instrument" },
+    { "name": "Farmer", "ability_scores": ["Strength", "Constitution", "Wisdom"], "feat": "Tough", "skills": ["Animal Handling", "Nature"], "tool": "Carpenter's Tools" },
+    { "name": "Guard", "ability_scores": ["Strength", "Intelligence", "Wisdom"], "feat": "Alert", "skills": ["Athletics", "Perception"], "tool": "Gaming Set" },
+    { "name": "Guide", "ability_scores": ["Dexterity", "Constitution", "Wisdom"], "feat": "Magic Initiate (Druid)", "skills": ["Stealth", "Survival"], "tool": "Cartographer's Tools" },
+    { "name": "Hermit", "ability_scores": ["Constitution", "Wisdom", "Charisma"], "feat": "Healer", "skills": ["Medicine", "Religion"], "tool": "Herbalism Kit" },
+    { "name": "Merchant", "ability_scores": ["Constitution", "Intelligence", "Charisma"], "feat": "Lucky", "skills": ["Animal Handling", "Persuasion"], "tool": "Navigator's Tools" },
+    { "name": "Noble", "ability_scores": ["Strength", "Intelligence", "Charisma"], "feat": "Skilled", "skills": ["History", "Persuasion"], "tool": "Gaming Set" },
+    { "name": "Sage", "ability_scores": ["Constitution", "Intelligence", "Wisdom"], "feat": "Magic Initiate (Wizard)", "skills": ["Arcana", "History"], "tool": "Calligrapher's Supplies" },
+    { "name": "Sailor", "ability_scores": ["Strength", "Dexterity", "Wisdom"], "feat": "Tavern Brawler", "skills": ["Acrobatics", "Perception"], "tool": "Navigator's Tools" },
+    { "name": "Scribe", "ability_scores": ["Dexterity", "Intelligence", "Wisdom"], "feat": "Skilled", "skills": ["Investigation", "Perception"], "tool": "Calligrapher's Supplies" },
+    { "name": "Soldier", "ability_scores": ["Strength", "Dexterity", "Constitution"], "feat": "Savage Attacker", "skills": ["Athletics", "Intimidation"], "tool": "Gaming Set" },
+    { "name": "Wayfarer", "ability_scores": ["Dexterity", "Wisdom", "Charisma"], "feat": "Lucky", "skills": ["Insight", "Stealth"], "tool": "Thieves' Tools" }
+  ],
+  "classes": [
+    {
+      "name": "Barbarian", "primary_ability": "Strength", "hit_die": "d12", "saving_throws": ["Strength", "Constitution"], "armor_training": ["Light Armor", "Medium Armor", "Shields"], "weapon_proficiencies": ["Simple Weapons", "Martial Weapons"],
+      "skill_count": 2, "skill_options": ["Animal Handling", "Athletics", "Intimidation", "Nature", "Perception", "Survival"]
+    },
+    {
+      "name": "Bard", "primary_ability": "Charisma", "hit_die": "d8", "saving_throws": ["Dexterity", "Charisma"], "armor_training": ["Light Armor"], "weapon_proficiencies": ["Simple Weapons"],
+      "skill_count": 3, "skill_options": ["Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival"],
+      "spellcasting": { "cantrips_known": 2, "spells_prepared": 4, "cantrip_options": ["Blade Ward", "Dancing Lights", "Friends", "Light", "Mage Hand", "Mending", "Message", "Minor Illusion", "Prestidigitation", "Starry Wisp", "Thunderclap", "True Strike", "Vicious Mockery"], "spell_options": ["Animal Friendship", "Bane", "Charm Person", "Color Spray", "Command", "Comprehend Languages", "Cure Wounds", "Detect Magic", "Disguise Self", "Dissonant Whispers", "Faerie Fire", "Feather Fall", "Healing Word", "Heroism", "Identify", "Illusory Script", "Longstrider", "Silent Image", "Sleep", "Speak with Animals", "Tasha's Hideous Laughter", "Thunderwave", "Unseen Servant"] }
+    },
+    {
+      "name": "Cleric", "primary_ability": "Wisdom", "hit_die": "d8", "saving_throws": ["Wisdom", "Charisma"], "armor_training": ["Light Armor", "Medium Armor", "Shields"], "weapon_proficiencies": ["Simple Weapons"],
+      "skill_count": 2, "skill_options": ["History", "Insight", "Medicine", "Persuasion", "Religion"],
+      "initial_choices": { "name": "Divine Order", "options": ["Protector (Heavy Armor & Martial Weapons)", "Thaumaturge (Extra Cantrip & Skill Bonus)"] },
+      "spellcasting": { "cantrips_known": 3, "spells_prepared": 4, "cantrip_options": ["Guidance", "Light", "Mending", "Resistance", "Sacred Flame", "Spare the Dying", "Thaumaturgy", "Toll the Dead", "Word of Radiance"], "spell_options": ["Bane", "Bless", "Command", "Create or Destroy Water", "Cure Wounds", "Detect Evil and Good", "Detect Magic", "Detect Poison and Disease", "Guiding Bolt", "Healing Word", "Inflict Wounds", "Protection from Evil and Good", "Purify Food and Drink", "Sanctuary", "Shield of Faith"] }
+    },
+    {
+      "name": "Druid", "primary_ability": "Wisdom", "hit_die": "d8", "saving_throws": ["Intelligence", "Wisdom"], "armor_training": ["Light Armor", "Shields"], "weapon_proficiencies": ["Simple Weapons"],
+      "skill_count": 2, "skill_options": ["Arcana", "Animal Handling", "Insight", "Medicine", "Nature", "Perception", "Religion", "Survival"],
+      "initial_choices": { "name": "Primal Order", "options": ["Magician (Extra Cantrip & Skill Bonus)", "Warden (Medium Armor & Martial Weapons)"] },
+      "spellcasting": { "cantrips_known": 2, "spells_prepared": 4, "cantrip_options": ["Druidcraft", "Elementalism", "Guidance", "Mending", "Message", "Poison Spray", "Produce Flame", "Resistance", "Shillelagh", "Spare the Dying", "Starry Wisp", "Thorn Whip", "Thunderclap"], "spell_options": ["Animal Friendship", "Charm Person", "Create or Destroy Water", "Cure Wounds", "Detect Magic", "Detect Poison and Disease", "Entangle", "Faerie Fire", "Fog Cloud", "Goodberry", "Healing Word", "Ice Knife", "Jump", "Longstrider", "Protection from Evil and Good", "Purify Food and Drink", "Speak with Animals", "Thunderwave"] }
+    },
+    {
+      "name": "Fighter", "primary_ability": "Strength or Dexterity", "hit_die": "d10", "saving_throws": ["Strength", "Constitution"], "armor_training": ["Light Armor", "Medium Armor", "Heavy Armor", "Shields"], "weapon_proficiencies": ["Simple Weapons", "Martial Weapons"],
+      "skill_count": 2, "skill_options": ["Acrobatics", "Animal Handling", "Athletics", "History", "Insight", "Intimidation", "Perception", "Survival"],
+      "initial_choices": { "name": "Fighting Style", "options": ["Archery", "Defense", "Dueling", "Great Weapon Fighting", "Interception", "Protection", "Thrown Weapon Fighting", "Two-Weapon Fighting", "Unarmed Fighting"] }
+    },
+    {
+      "name": "Monk", "primary_ability": "Dexterity and Wisdom", "hit_die": "d8", "saving_throws": ["Strength", "Dexterity"], "armor_training": [], "weapon_proficiencies": ["Simple Weapons", "Martial Weapons (Light property)"], "skill_count": 2, "skill_options": ["Acrobatics", "Athletics", "History", "Insight", "Religion", "Stealth"]
+    },
+    {
+      "name": "Paladin", "primary_ability": "Strength and Charisma", "hit_die": "d10", "saving_throws": ["Wisdom", "Charisma"], "armor_training": ["Light Armor", "Medium Armor", "Heavy Armor", "Shields"], "weapon_proficiencies": ["Simple Weapons", "Martial Weapons"], "skill_count": 2, "skill_options": ["Athletics", "Insight", "Intimidation", "Medicine", "Persuasion", "Religion"],
+      "spellcasting": { "cantrips_known": 0, "spells_prepared": 2, "cantrip_options": [], "spell_options": ["Bless", "Command", "Compelled Duel", "Cure Wounds", "Detect Evil and Good", "Detect Magic", "Detect Poison and Disease", "Divine Favor", "Divine Smite", "Heroism", "Protection from Evil and Good", "Purify Food and Drink", "Searing Smite", "Shield of Faith", "Thunderous Smite", "Wrathful Smite"] }
+    },
+    {
+      "name": "Ranger", "primary_ability": "Dexterity and Wisdom", "hit_die": "d10", "saving_throws": ["Strength", "Dexterity"], "armor_training": ["Light Armor", "Medium Armor", "Shields"], "weapon_proficiencies": ["Simple Weapons", "Martial Weapons"], "skill_count": 3, "skill_options": ["Animal Handling", "Athletics", "Insight", "Investigation", "Nature", "Perception", "Stealth", "Survival"],
+      "spellcasting": { "cantrips_known": 0, "spells_prepared": 2, "cantrip_options": [], "spell_options": ["Alarm", "Animal Friendship", "Cure Wounds", "Detect Magic", "Detect Poison and Disease", "Ensnaring Strike", "Entangle", "Fog Cloud", "Goodberry", "Hail of Thorns", "Hunter's Mark", "Jump", "Longstrider", "Speak with Animals"] }
+    },
+    {
+      "name": "Rogue", "primary_ability": "Dexterity", "hit_die": "d8", "saving_throws": ["Dexterity", "Intelligence"], "armor_training": ["Light Armor"], "weapon_proficiencies": ["Simple Weapons", "Martial Weapons (Finesse or Light)"], "skill_count": 4, "skill_options": ["Acrobatics", "Athletics", "Deception", "Insight", "Intimidation", "Investigation", "Perception", "Performance", "Persuasion", "Sleight of Hand", "Stealth"]
+    },
+    {
+      "name": "Sorcerer", "primary_ability": "Charisma", "hit_die": "d6", "saving_throws": ["Constitution", "Charisma"], "armor_training": [], "weapon_proficiencies": ["Simple Weapons"], "skill_count": 2, "skill_options": ["Arcana", "Deception", "Insight", "Intimidation", "Persuasion", "Religion"],
+      "spellcasting": { "cantrips_known": 4, "spells_prepared": 2, "cantrip_options": ["Acid Splash", "Blade Ward", "Chill Touch", "Dancing Lights", "Fire Bolt", "Friends", "Light", "Mage Hand", "Mending", "Message", "Mind Sliver", "Minor Illusion", "Poison Spray", "Prestidigitation", "Ray of Frost", "Shocking Grasp", "Sorcerous Burst", "Thunderclap", "True Strike"], "spell_options": ["Burning Hands", "Charm Person", "Chromatic Orb", "Color Spray", "Comprehend Languages", "Detect Magic", "Disguise Self", "Expeditious Retreat", "False Life", "Feather Fall", "Fog Cloud", "Grease", "Ice Knife", "Jump", "Mage Armor", "Magic Missile", "Ray of Sickness", "Shield", "Silent Image", "Sleep", "Thunderwave", "Witch Bolt"] }
+    },
+    {
+      "name": "Warlock", "primary_ability": "Charisma", "hit_die": "d8", "saving_throws": ["Wisdom", "Charisma"], "armor_training": ["Light Armor"], "weapon_proficiencies": ["Simple Weapons"], "skill_count": 2, "skill_options": ["Arcana", "Deception", "History", "Intimidation", "Investigation", "Nature", "Religion"],
+      "spellcasting": { "cantrips_known": 2, "spells_prepared": 2, "cantrip_options": ["Blade Ward", "Chill Touch", "Eldritch Blast", "Friends", "Mage Hand", "Magic Stone", "Minor Illusion", "Poison Spray", "Prestidigitation", "Toll the Dead", "True Strike"], "spell_options": ["Armor of Agathys", "Arms of Hadar", "Bane", "Charm Person", "Comprehend Languages", "Detect Magic", "Expeditious Retreat", "Hellish Rebuke", "Hex", "Illusory Script", "Protection from Evil and Good", "Speak with Animals", "Tasha's Hideous Laughter", "Unseen Servant", "Witch Bolt"] }
+    },
+    {
+      "name": "Wizard", "primary_ability": "Intelligence", "hit_die": "d6", "saving_throws": ["Intelligence", "Wisdom"], "armor_training": [], "weapon_proficiencies": ["Simple Weapons"], "skill_count": 2, "skill_options": ["Arcana", "History", "Insight", "Investigation", "Medicine", "Religion"],
+      "spellcasting": { "cantrips_known": 3, "spells_prepared": 4, "cantrip_options": ["Acid Splash", "Blade Ward", "Chill Touch", "Dancing Lights", "Elementalism", "Fire Bolt", "Friends", "Light", "Mage Hand", "Mending", "Message", "Mind Sliver", "Minor Illusion", "Poison Spray", "Prestidigitation", "Ray of Frost", "Shocking Grasp", "Thunderclap", "Toll the Dead", "True Strike"], "spell_options": ["Alarm", "Burning Hands", "Charm Person", "Chromatic Orb", "Color Spray", "Comprehend Languages", "Detect Magic", "Disguise Self", "Expeditious Retreat", "False Life", "Feather Fall", "Find Familiar", "Fog Cloud", "Grease", "Ice Knife", "Identify", "Illusory Script", "Jump", "Longstrider", "Mage Armor", "Magic Missile", "Protection from Evil and Good", "Ray of Sickness", "Shield", "Silent Image", "Sleep", "Tasha's Hideous Laughter", "Tenser's Floating Disk", "Thunderwave", "Unseen Servant", "Witch Bolt"] }
+    }
+  ],
+  "armors": [
+    { "name": "Padded Armor", "category": "Light", "ac": "11 + Dex", "strength": null, "stealth": "Disadvantage", "cost": "5 GP", "weight": "8 lb." },
+    { "name": "Leather Armor", "category": "Light", "ac": "11 + Dex", "strength": null, "stealth": null, "cost": "10 GP", "weight": "10 lb." },
+    { "name": "Studded Leather", "category": "Light", "ac": "12 + Dex", "strength": null, "stealth": null, "cost": "45 GP", "weight": "13 lb." },
+    { "name": "Hide Armor", "category": "Medium", "ac": "12 + Dex (max 2)", "strength": null, "stealth": null, "cost": "10 GP", "weight": "12 lb." },
+    { "name": "Chain Shirt", "category": "Medium", "ac": "13 + Dex (max 2)", "strength": null, "stealth": null, "cost": "50 GP", "weight": "20 lb." },
+    { "name": "Scale Mail", "category": "Medium", "ac": "14 + Dex (max 2)", "strength": null, "stealth": "Disadvantage", "cost": "50 GP", "weight": "45 lb." },
+    { "name": "Breastplate", "category": "Medium", "ac": "14 + Dex (max 2)", "strength": null, "stealth": null, "cost": "400 GP", "weight": "20 lb." },
+    { "name": "Half Plate", "category": "Medium", "ac": "15 + Dex (max 2)", "strength": null, "stealth": "Disadvantage", "cost": "750 GP", "weight": "40 lb." },
+    { "name": "Ring Mail", "category": "Heavy", "ac": "14", "strength": null, "stealth": "Disadvantage", "cost": "30 GP", "weight": "40 lb." },
+    { "name": "Chain Mail", "category": "Heavy", "ac": "16", "strength": "Str 13", "stealth": "Disadvantage", "cost": "75 GP", "weight": "55 lb." },
+    { "name": "Splint Armor", "category": "Heavy", "ac": "17", "strength": "Str 15", "stealth": "Disadvantage", "cost": "200 GP", "weight": "60 lb." },
+    { "name": "Plate Armor", "category": "Heavy", "ac": "18", "strength": "Str 15", "stealth": "Disadvantage", "cost": "1500 GP", "weight": "65 lb." },
+    { "name": "Shield", "category": "Shield", "ac": "+2", "strength": null, "stealth": null, "cost": "10 GP", "weight": "6 lb." }
+  ],
+  "weapons": [
+    { "name": "Dagger", "type": "Simple Melee", "damage": "1d4 Piercing", "properties": ["Finesse", "Light", "Thrown (20/60)"], "mastery": "Nick" },
+    { "name": "Mace", "type": "Simple Melee", "damage": "1d6 Bludgeoning", "properties": [], "mastery": "Sap" },
+    { "name": "Quarterstaff", "type": "Simple Melee", "damage": "1d6 Bludgeoning", "properties": ["Versatile (1d8)"], "mastery": "Topple" },
+    { "name": "Spear", "type": "Simple Melee", "damage": "1d6 Piercing", "properties": ["Thrown (20/60)", "Versatile (1d8)"], "mastery": "Sap" },
+    { "name": "Light Crossbow", "type": "Simple Ranged", "damage": "1d8 Piercing", "properties": ["Ammunition (80/320)", "Loading", "Two-Handed"], "mastery": "Slow" },
+    { "name": "Shortbow", "type": "Simple Ranged", "damage": "1d6 Piercing", "properties": ["Ammunition (80/320)", "Two-Handed"], "mastery": "Vex" },
+    { "name": "Battleaxe", "type": "Martial Melee", "damage": "1d8 Slashing", "properties": ["Versatile (1d10)"], "mastery": "Topple" },
+    { "name": "Greataxe", "type": "Martial Melee", "damage": "1d12 Slashing", "properties": ["Heavy", "Two-Handed"], "mastery": "Cleave" },
+    { "name": "Greatsword", "type": "Martial Melee", "damage": "2d6 Slashing", "properties": ["Heavy", "Two-Handed"], "mastery": "Graze" },
+    { "name": "Longsword", "type": "Martial Melee", "damage": "1d8 Slashing", "properties": ["Versatile (1d10)"], "mastery": "Sap" },
+    { "name": "Maul", "type": "Martial Melee", "damage": "2d6 Bludgeoning", "properties": ["Heavy", "Two-Handed"], "mastery": "Topple" },
+    { "name": "Rapier", "type": "Martial Melee", "damage": "1d8 Piercing", "properties": ["Finesse"], "mastery": "Vex" },
+    { "name": "Scimitar", "type": "Martial Melee", "damage": "1d6 Slashing", "properties": ["Finesse", "Light"], "mastery": "Nick" },
+    { "name": "Shortsword", "type": "Martial Melee", "damage": "1d6 Piercing", "properties": ["Finesse", "Light"], "mastery": "Vex" },
+    { "name": "Warhammer", "type": "Martial Melee", "damage": "1d8 Bludgeoning", "properties": ["Versatile (1d10)"], "mastery": "Push" },
+    { "name": "Longbow", "type": "Martial Ranged", "damage": "1d8 Piercing", "properties": ["Ammunition (150/600)", "Heavy", "Two-Handed"], "mastery": "Slow" }
+  ]
+}

@@ -1,0 +1,29 @@
+# Python - Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Python - Sanal Ortamlar (Virtual Environments)
+venv/
+.venv/
+env/
+ENV/
+bin/
+lib/
+include/
+
+# Projeye Özel Veriler ve Arşivler
+# (Kullanıcı verilerini ve geçici önbellekleri gizli tutmak için)
+storage/karakterler_arsiv.json
+storage/rules_cache.json
+.gemini/
+.idea/
+.vscode/
+
+# İşletim Sistemi Dosyaları
+.DS_Store
+Thumbs.db
+
+# Log Dosyaları
+*.log
