@@ -43,6 +43,8 @@ Bu proje, **Dungeons & Dragons 2024 (PHB 2024)** kurallarını temel alan, moder
 - [ ] **Zar Motoru:** Stat modlarına tıklandığında 1d20 animasyonu.
 - [ ] **Büyü Sistemi:** Cantrip ve Spell Slot takibi.
 - [ ] **Alt Sınıflar:** 3. seviyede Subclass seçimi desteği.
+- [ ] **Online Oyun Desteği:** Çok oyunculu bağlantı ve gerçek zamanlı senkronizasyon.
+- [ ] **DM ve Oyuncu Ayrımı:** Dungeon Master kontrol paneli ve oyuncu kısıtlamaları.
 
 ## 📄 Lisans
 

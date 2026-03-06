@@ -37,6 +37,8 @@ Her karakter üretimi şu adımları izlemelidir:
 *   [ ] **Zar Motoru:** Stat modlarına tıklandığında 1d20 animasyonu ve sonucu.
 *   [ ] **Büyü Sistemi:** Cantrip ve Spell Slot takibi.
 *   [ ] **Subclass:** 3. seviyede alt sınıf seçimi.
+*   [ ] **Online Altyapı:** Çok oyunculu destek için WebSocket tabanlı gerçek zamanlı senkronizasyon.
+*   [ ] **DM ve Oyuncu Rolleri:** Dungeon Master (tüm karakterleri görebilme/yönetme) ve Oyuncu (sadece kendi karakterini görme) ayrımı.
 
 ---
 *Not: Bu dosya her oturum başında "Research" fazında okunmalı ve projenin tutarlılığı korunmalıdır.*
