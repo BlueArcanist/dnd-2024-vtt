@@ -2,6 +2,10 @@ import json
 import os
 import sys
 
+# Dosya yollarını dinamik hale getirelim (Proje kök dizinine göre)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+
 def load_data(file_path):
     if not os.path.exists(file_path):
         return {}
@@ -26,17 +30,19 @@ def get_hp_increase(hit_die):
     return mapping.get(hit_die, 0)
 
 def level_up(character_name, target_level):
-    archive_file = 'karakterler_arsiv.json'
-    features_file = 'feature_map.json'
+    archive_file = os.path.join(PROJECT_ROOT, "storage", "karakterler_arsiv.json")
+    features_file = os.path.join(PROJECT_ROOT, "data", "feature_map.json")
+    rules_file = os.path.join(PROJECT_ROOT, "data", "rules_data.json")
     
     archive = load_data(archive_file)
     features_map = load_data(features_file)
+    rules_data = load_data(rules_file)
     
     if not archive or not features_map:
         print("Hata: Arşiv veya özellik haritası yüklenemedi.")
         return
 
-    char = next((c for c in archive if c['Isim'] == character_name), None)
+    char = next((c for c in archive if c['Isim'].lower() == character_name.lower()), None)
     
     if not char:
         print(f"Hata: '{character_name}' isimli karakter bulunamadı.")
@@ -52,14 +58,21 @@ def level_up(character_name, target_level):
         print(f"Hata: {char_class} sınıfı özellik haritasında bulunamadı.")
         return
 
-    # Con Mod hesaplama (Stat_Bonuslari'ndan Con varsa +2/+1 eklenmiş olabilir)
-    # Varsayılan Con skoru 10 (+0 mod) kabul edilirse sadece bonuslara bakılır.
-    # Ancak basitlik için PHB 2024 Fixed HP (X + Con mod) kuralını Con=10 varsayarak uyguluyoruz.
-    con_bonus = char.get('Stat_Bonuslari', {}).get('Constitution', 0)
-    # D&D 5e/2024: (Score - 10) // 2. Skor bilinmediği için sadece bonusu (2 veya 1) ekliyoruz.
-    con_mod = con_bonus // 2 
+    # Hit_Die kontrolü (Eski karakterlerde olmayabilir, rules_data'dan çekelim)
+    hit_die = char.get('Hit_Die')
+    if not hit_die:
+        class_rules = next((c for c in rules_data.get('classes', []) if c['name'] == char_class), None)
+        if class_rules:
+            hit_die = class_rules['hit_die']
+            char['Hit_Die'] = hit_die
+        else:
+            hit_die = "d8" # Varsayılan
 
-    hp_increase_per_level = get_hp_increase(char['Hit_Die']) + con_mod
+    # Con Mod hesaplama (Total Score = Base + Bonus)
+    total_con = char.get('Base_Stats', {}).get('Constitution', 10) + char.get('Stat_Bonuslari', {}).get('Constitution', 0)
+    con_mod = (total_con - 10) // 2
+
+    hp_increase_per_level = get_hp_increase(hit_die) + con_mod
 
     # Seviye atlama döngüsü
     for lvl in range(current_level + 1, target_level + 1):
@@ -70,8 +83,14 @@ def level_up(character_name, target_level):
             char['HP'] = char['HP_Level_1'] + hp_increase_per_level
             del char['HP_Level_1']
         
-        # Özellikleri ekle
-        new_features = features_map[char_class].get(str(lvl), [])
+        # Sınıf Özelliklerini ekle
+        new_features = features_map.get(char_class, {}).get(str(lvl), [])
+        
+        # Irk (Species) Özelliklerini ekle
+        char_species = char.get('Species')
+        species_features = features_map.get('Species', {}).get(char_species, {}).get(str(lvl), [])
+        new_features.extend(species_features)
+
         if 'Class_Features' not in char:
             char['Class_Features'] = []
         

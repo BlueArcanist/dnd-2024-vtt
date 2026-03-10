@@ -1,20 +1,30 @@
 import json
 import os
+import sys
+
+# Backend klasörünü path'e ekleyelim ki feature_info import edilebilsin
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, "backend"))
+
 from feature_info import get_feature_details
+
+# Dosya yolları
+RULES_FILE = os.path.join(BASE_DIR, "data", "rules_data.json")
+ARCHIVE_FILE = os.path.join(BASE_DIR, "storage", "karakterler_arsiv.json")
 
 def load_rules():
     """rules_data.json dosyasını yükler."""
-    if not os.path.exists('rules_data.json'):
-        print("Hata: rules_data.json dosyası bulunamadı!")
+    if not os.path.exists(RULES_FILE):
+        print(f"Hata: {RULES_FILE} dosyası bulunamadı!")
         return None
-    with open('rules_data.json', 'r', encoding='utf-8') as f:
+    with open(RULES_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def load_archive():
     """karakterler_arsiv.json dosyasını yükler."""
-    if not os.path.exists('karakterler_arsiv.json'):
+    if not os.path.exists(ARCHIVE_FILE):
         return []
-    with open('karakterler_arsiv.json', 'r', encoding='utf-8') as f:
+    with open(ARCHIVE_FILE, 'r', encoding='utf-8') as f:
         try:
             return json.load(f)
         except json.JSONDecodeError:
@@ -25,7 +35,10 @@ def save_character(character):
     archive = load_archive()
     archive.append(character)
     
-    with open('karakterler_arsiv.json', 'w', encoding='utf-8') as f:
+    if not os.path.exists(os.path.dirname(ARCHIVE_FILE)):
+        os.makedirs(os.path.dirname(ARCHIVE_FILE))
+        
+    with open(ARCHIVE_FILE, 'w', encoding='utf-8') as f:
         json.dump(archive, f, indent=4, ensure_ascii=False)
 
 def get_input(prompt, options):

@@ -1,0 +1,78 @@
+{
+  "Barbarian": {
+    "Path of the Berserker": {
+      "3": ["Frenzy"]
+    },
+    "Path of the Wild Heart": {
+      "3": ["Animal Aspect (Choice)"]
+    }
+  },
+  "Bard": {
+    "College of Lore": {
+      "3": ["Bonus Proficiencies", "Cutting Words"]
+    }
+  },
+  "Cleric": {
+    "Life Domain": {
+      "3": ["Disciple of Life", "Preserve Life", "Life Domain Spells (Aid, Bless, Cure Wounds, Lesser Restoration)"]
+    },
+    "Light Domain": {
+      "3": ["Radiance of the Dawn", "Warding Flare", "Light Domain Spells (Burning Hands, Faerie Fire, Flaming Sphere, Scorching Ray)"]
+    },
+    "War Domain": {
+      "3": ["War Priest", "Guided Strike", "War Domain Spells (Divine Favor, Shield of Faith, Magic Weapon, Spiritual Weapon)"]
+    }
+  },
+  "Druid": {
+    "Circle of the Moon": {
+      "3": ["Circle Forms", "Circle of the Moon Spells (Cure Wounds, Moonbeam, Starry Wisp)"]
+    },
+    "Circle of the Land": {
+      "3": ["Land's Stride", "Circle Spells (Choice of Land)"]
+    }
+  },
+  "Fighter": {
+    "Battle Master": {
+      "3": ["Combat Superiority (3 Maneuvers)", "Student of War (Artisan's Tools & Skill)"]
+    },
+    "Champion": {
+      "3": ["Improved Critical", "Remarkable Athlete"]
+    }
+  },
+  "Paladin": {
+    "Oath of Devotion": {
+      "3": ["Sacred Weapon", "Oath Spells (Protection from Evil and Good, Sanctuary, Lesser Restoration, Zone of Truth)"]
+    }
+  },
+  "Ranger": {
+    "Hunter": {
+      "3": ["Hunter's Prey (Choice)", "Hunter Spells"]
+    }
+  },
+  "Rogue": {
+    "Thief": {
+      "3": ["Fast Hands", "Second-Story Work"]
+    },
+    "Assassin": {
+      "3": ["Assassinate", "Infiltration Expertise"]
+    }
+  },
+  "Sorcerer": {
+    "Draconic Sorcery": {
+      "3": ["Draconic Resilience", "Draconic Language", "Draconic Spells"]
+    }
+  },
+  "Warlock": {
+    "Fiend Patron": {
+      "3": ["Dark One's Blessing", "Fiend Spells"]
+    }
+  },
+  "Wizard": {
+    "Evoker": {
+      "3": ["Evocation Savant", "Sculpt Spells"]
+    },
+    "Abjurer": {
+      "3": ["Abjuration Savant", "Arcane Ward"]
+    }
+  }
+}

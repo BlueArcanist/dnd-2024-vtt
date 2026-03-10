@@ -32,13 +32,16 @@ Her karakter üretimi şu adımları izlemelidir:
 *   **Veritabanı:** Prototip aşamasında `karakterler_arsiv.json` kullanılmalıdır.
 
 ## 5. Gelecek Geliştirmeler (Yapılacaklar)
-*   [ ] **Ekipman Sistemi:** Silah ve Zırh seçimi, ağırlık takibi.
-*   [ ] **Dinamik AC:** Giyilen zırha göre Armor Class hesaplama.
+*   [x] **Ekipman Sistemi:** Silah ve Zırh seçimi, temel veritabanı.
+*   [x] **Dinamik AC:** Giyilen zırha göre Armor Class hesaplama.
+*   [ ] **Weapon Mastery:** Silah özelliklerinin (Nick, Topple vb.) mekanik açıklamaları ve UI entegrasyonu.
+*   [ ] **General Feats (Lvl 4+):** Seviye atlamada 4, 8, 12, 16 ve 19. seviye yetenek seçim ekranları.
+*   [ ] **Kaynak ve Dinlenme:** Short/Long Rest butonları, Hit Dice ve Class Resource (Rage, Second Wind vb.) takibi.
+*   [ ] **Büyü Slotu Sistemi:** Sınıf seviyesine göre günlük büyü slotu takibi.
 *   [ ] **Zar Motoru:** Stat modlarına tıklandığında 1d20 animasyonu ve sonucu.
-*   [ ] **Büyü Sistemi:** Cantrip ve Spell Slot takibi.
-*   [ ] **Subclass:** 3. seviyede alt sınıf seçimi.
+*   [ ] **Durum Takibi (Conditions):** 2024 kurallarına göre Exhaustion ve Condition etkilerinin dinamik hesaplanması.
+*   [ ] **Envanter Ağırlık Sistemi:** Taşıma kapasitesi ve hız üzerindeki etkileri.
 *   [ ] **Online Altyapı:** Çok oyunculu destek için WebSocket tabanlı gerçek zamanlı senkronizasyon.
-*   [ ] **DM ve Oyuncu Rolleri:** Dungeon Master (tüm karakterleri görebilme/yönetme) ve Oyuncu (sadece kendi karakterini görme) ayrımı.
 
 ---
 *Not: Bu dosya her oturum başında "Research" fazında okunmalı ve projenin tutarlılığı korunmalıdır.*

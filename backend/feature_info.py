@@ -1,5 +1,11 @@
 import subprocess
 import sys
+import os
+
+# Dosya yollarını dinamik hale getirelim
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+PHB_REFERENCE = os.path.join(PROJECT_ROOT, "reference", "phb_2024_referans.md")
 
 def get_feature_details(feature_name):
     """
@@ -18,8 +24,8 @@ def get_feature_details(feature_name):
     )
     
     try:
-        # gemini query komutunu çalıştır
-        cmd = ["gemini", "query", prompt, "--context", "phb_2024_referans.md"]
+        # gemini query komutunu çalıştır (Güvenli liste formatı)
+        cmd = ["gemini", "query", prompt, "--context", PHB_REFERENCE]
         result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
         
         if result.returncode != 0:

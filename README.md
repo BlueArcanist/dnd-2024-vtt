@@ -18,33 +18,43 @@ Bu proje, **Dungeons & Dragons 2024 (PHB 2024)** kurallarını temel alan, moder
 - **Frontend:** Vanilla HTML5, CSS3, JavaScript
 - **Veri Katmanı:** JSON tabanlı yerel arşivleme (`storage/`) ve kural veritabanı (`data/`)
 
-## 🚀 Kurulum
+## 🚀 Kurulum ve Çalıştırma
 
-1. Depoyu klonlayın:
-   ```bash
-   git clone https://github.com/BlueArcanist/dnd-2024-vtt.git
-   cd dnd-2024-vtt
-   ```
-
+1. Depoyu klonlayın ve klasöre girin.
 2. Gerekli kütüphaneleri kurun:
    ```bash
    pip install fastapi uvicorn
    ```
 
-3. Uygulamayı başlatın:
-   ```bash
-   python dnd_app.py
-   ```
+### 🌐 Web Uygulamasını Başlatma (FastAPI)
+Frontend arayüzünü kullanmak için backend sunucusunu başlatmanız gerekir:
+```bash
+cd backend
+python main.py
+```
+Sunucu başladıktan sonra `frontend/index.html` dosyasını tarayıcınızda açarak karakter oluşturmaya başlayabilirsiniz.
+
+### 💻 Terminal Uygulamasını Başlatma (CLI)
+Sadece komut satırı üzerinden hızlı karakter oluşturmak için:
+```bash
+python dnd_app.py
+```
+
+## 🔐 Güvenlik ve Yapılandırma Notları
+- **Dinamik Yollar:** Uygulama artık dosya yollarını (`data/`, `storage/`, `reference/`) proje kök dizinine göre dinamik olarak çözer. Herhangi bir klasörden güvenle çalıştırılabilir.
+- **Güvenli Sorgular:** AI kural sorgulama sistemi (Gemini CLI), Shell Injection saldırılarına karşı korumalı hale getirilmiştir.
 
 ## 🗺️ Yol Haritası (Gelecek Geliştirmeler)
 
-- [ ] **Ekipman Sistemi:** Silah/Zırh seçimi ve ağırlık takibi.
-- [ ] **Dinamik AC:** Giyilen zırha göre Armor Class hesaplama.
+- [x] **Subclass Sistemi:** 3. seviyede 2024 kurallarına uygun alt sınıf seçimi.
+- [x] **Dinamik AC:** Giyilen zırha göre Armor Class hesaplama.
+- [ ] **Weapon Mastery:** Silah özelliklerinin (Nick, Topple vb.) mekanik açıklamaları ve entegrasyonu.
+- [ ] **General Feats (Lvl 4+):** Seviye atlama ekranlarında yetenek seçimi.
+- [ ] **Kaynak ve Dinlenme:** Short/Long Rest takibi, Hit Dice ve kaynak yenileme.
 - [ ] **Zar Motoru:** Stat modlarına tıklandığında 1d20 animasyonu.
-- [ ] **Büyü Sistemi:** Cantrip ve Spell Slot takibi.
-- [ ] **Alt Sınıflar:** 3. seviyede Subclass seçimi desteği.
-- [ ] **Online Oyun Desteği:** Çok oyunculu bağlantı ve gerçek zamanlı senkronizasyon.
-- [ ] **DM ve Oyuncu Ayrımı:** Dungeon Master kontrol paneli ve oyuncu kısıtlamaları.
+- [ ] **Büyü Slotu Sistemi:** Cantrip ve Spell Slot takibi.
+- [ ] **Durum Takibi:** Condition etkilerinin (Exhaustion vb.) karakter üzerindeki yansımaları.
+- [ ] **Online Altyapı:** Çok oyunculu destek.
 
 ## 📄 Lisans
 

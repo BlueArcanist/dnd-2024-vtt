@@ -52,6 +52,18 @@
     <div id="create-view" class="view-panel">
         <span class="close-btn" onclick="showListView()">×</span>
         <h2 id="form-title">Karakter İnşası</h2>
+        <div style="margin-bottom: 20px; background: #eef; padding: 10px; border-radius: 8px; border: 1px dashed var(--primary); text-align: center;">
+            <p style="margin: 0 0 10px 0; font-size: 0.9rem;">Hızlıca başlamak ister misiniz? Kurallara uygun en dengeli seçimi sizin için yapalım.</p>
+            <button class="btn-main" onclick="autoGenerateBalanced()">🎲 OTOMATİK DENGELİ OLUŞTUR</button>
+            <details style="margin-top: 10px; font-size: 0.8rem; color: #555; cursor: pointer;">
+                <summary>Dengeli İnşa Rehberi Nedir?</summary>
+                <p style="text-align: left; padding: 10px;">
+                    • <strong>Statlar:</strong> Ana yeteneğinize 15, hayatta kalma (CON) için 14 ve zırh (DEX) için 13 atanır.<br>
+                    • <strong>Arkaplan:</strong> Sınıfınızın ana yeteneğini destekleyen bir geçmiş seçilir (+2 bonus oraya gider).<br>
+                    • <strong>Yetenekler:</strong> Sınıfınızın en yetkin olduğu alanlar otomatik işaretlenir.
+                </p>
+            </details>
+        </div>
         <div class="form-row">
             <div class="form-group"><label>İsim</label><input type="text" id="new-name"></div>
             <div class="form-group" style="flex: 0.3;"><label>Level</label><input type="number" id="new-level" value="1"></div>
@@ -96,7 +108,11 @@
             <div class="stat-input"><label>WIS</label><select class="stat-select" id="in-wis"></select></div>
             <div class="stat-input"><label>CHA</label><select class="stat-select" id="in-cha"></select></div>
         </div>
-        <div class="form-group"><label>Ek Diller</label><div style="display: flex; gap: 10px;"><select id="sel-lang-1"></select><select id="sel-lang-2"></select></div></div>
+        <div class="form-group">
+            <label>Ek Diller</label>
+            <div style="display: flex; gap: 10px;"><select id="sel-lang-1"></select><select id="sel-lang-2"></select></div>
+            <div id="extra-lang-selection" style="display: none; margin-top: 10px;"></div>
+        </div>
         <button class="btn-main" style="width: 100%; margin-top: 20px;" onclick="submitCharacter()">KARAKTERİ KAYDET</button>
     </div>
 
@@ -106,6 +122,7 @@
             <h2 id="det-name" style="margin: 0;"></h2>
             <div>
                 <button class="btn-edit" onclick="editCurrentCharacter()">✏️ Bilgileri Düzenle</button>
+                <button class="btn-accent" onclick="openLevelUpModal()">🆙 Level Up</button>
             </div>
         </div>
         <p id="det-info"></p>
@@ -124,6 +141,33 @@
     </div>
 
     <div id="rule-modal"><div class="modal-content"><span class="close-btn" onclick="closeRuleModal()">×</span><h2 id="rule-title"></h2><hr><div id="rule-body"></div></div></div>
+
+    <!-- YENİ: Level Up Modalı -->
+    <div id="level-up-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeLevelUpModal()">×</span>
+            <h2>Seviye Atla</h2>
+            <hr>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Hedef Seviye:</label>
+                <input type="number" id="lvl-up-target" min="1" max="20" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <div id="subclass-selection" style="display: none; margin-top: 20px;" class="selection-box">
+                <label style="color: var(--primary);"><strong>Alt Sınıf Seçimi (Level 3+)</strong></label>
+                <p style="font-size: 0.9rem;">2024 kurallarına göre bir alt sınıf seçmelisiniz:</p>
+                <select id="sel-subclass" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></select>
+            </div>
+            <div id="lvl-up-lang-selection" style="display: none; margin-top: 20px;" class="selection-box">
+                <label style="color: var(--primary);"><strong>Deft Explorer (Level 2 Ranger)</strong></label>
+                <p style="font-size: 0.9rem;">2 yeni dil seçin (Rare dahil):</p>
+                <div style="display: flex; gap: 5px;">
+                    <select id="sel-lvl-lang-1" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></select>
+                    <select id="sel-lvl-lang-2" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"></select>
+                </div>
+            </div>
+            <button class="btn-main" style="width: 100%; margin-top: 20px; padding: 15px;" onclick="confirmLevelUp()">SEVİYEYİ ONAYLA</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -151,7 +195,7 @@
             sel.addEventListener('change', updateStatDropdowns);
         });
         const renderLangs = (el) => {
-            el.innerHTML = `<option value="">Seç...</option><optgroup label="Standart">${LANGUAGES_STANDARD.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup><optgroup label="Rare">${LANGUAGES_RARE.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>`;
+            el.innerHTML = `<option value="">Seç...</option><optgroup label="Standart">${LANGUAGES_STANDARD.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>`;
         };
         renderLangs(document.getElementById('sel-lang-1')); renderLangs(document.getElementById('sel-lang-2'));
     }
@@ -171,7 +215,10 @@
     }
 
     function updateClassUI() {
-        const cls = rulesData.classes.find(c => c.name === document.getElementById('sel-class').value);
+        const clsName = document.getElementById('sel-class').value;
+        const cls = rulesData.classes.find(c => c.name === clsName);
+        if (!cls) return;
+
         document.getElementById('skill-count-info').innerText = `Lütfen ${cls.skill_count} yetenek seçin:`;
         document.getElementById('skill-options').innerHTML = cls.skill_options.map(s => `<label><input type="checkbox" name="skill" value="${s}"> ${s}</label>`).join('');
         document.getElementById('class-skill-box').style.display = 'block';
@@ -182,6 +229,19 @@
             document.getElementById('sel-class-choice').innerHTML = cls.initial_choices.options.map(o => `<option value="${o}">${o}</option>`).join('');
             choiceBox.style.display = 'block';
         } else { choiceBox.style.display = 'none'; }
+
+        // Rare dil seçimi kontrolü (Rogue Level 1)
+        const extraLangBox = document.getElementById('extra-lang-selection');
+        if (cls.can_choose_rare) {
+            extraLangBox.style.display = 'block';
+            extraLangBox.innerHTML = `<label>Ekstra Dil (Rogue Ayrıcalığı):</label><select id="sel-extra-lang" class="stat-select"></select>`;
+            const sel = document.getElementById('sel-extra-lang');
+            sel.innerHTML = `<option value="">Seç...</option>
+                <optgroup label="Standart">${LANGUAGES_STANDARD.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>
+                <optgroup label="Rare (Nadir)">${LANGUAGES_RARE.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>`;
+        } else {
+            extraLangBox.style.display = 'none';
+        }
 
         // Büyü Paneli Mantığı
         const spellBox = document.getElementById('spellcasting-box');
@@ -257,11 +317,18 @@
         let spellText = "";
         if (c.Spellcasting) {
             if (c.Spellcasting.Cantrips && c.Spellcasting.Cantrips.length > 0) spellText += `<strong>Cantrips:</strong> ${c.Spellcasting.Cantrips.join(', ')}<br>`;
-            if (c.Spellcasting.Spells && c.Spellcasting.Spells.length > 0) spellText += `<strong>Büyüler:</strong> ${c.Spellcasting.Spells.join(', ')}`;
+            if (c.Spellcasting.Spells && c.Spellcasting.Spells.length > 0) {
+                // Hazırlanmış büyüleri göster
+                spellText += `<strong>Hazırlanan Büyüler:</strong> ${c.Spellcasting.Spells.join(', ')}`;
+            }
         }
         
         const featList = document.getElementById('det-features');
-        featList.innerHTML = [...(c.Class_Features || []), `Origin Feat: ${c.Origin_Feat}`, ...(c.Species_Traits || [])].map(f => `<li class="feature-item" onclick="openRuleModal('${f}')">${f}</li>`).join('');
+        // Özellikleri listelerken alt sınıftan gelenleri vurgula
+        featList.innerHTML = [...(c.Class_Features || []), `Origin Feat: ${c.Origin_Feat}`, ...(c.Species_Traits || [])].map(f => {
+            const isSubclass = f.includes(' - Level 3)');
+            return `<li class="feature-item" style="${isSubclass ? 'color: var(--accent); font-weight: bold;' : ''}" onclick="openRuleModal('${f}')">${f}</li>`;
+        }).join('');
         
         if (spellText) {
             featList.innerHTML += `<li style="margin-top: 15px; list-style: none; padding: 10px; background: #eee; border-radius: 5px;">${spellText}</li>`;
@@ -271,26 +338,77 @@
         document.getElementById('detail-view').style.display = 'block';
     }
 
-    function editCurrentCharacter() {
+    async function editCurrentCharacter() {
         const c = currentCharData;
-        showCreateView();
+        
+        // Önce kuralları yükle ve builder'ı hazırla
+        if (!rulesData) await fetchRules();
+        initBuilder();
+        
+        document.getElementById('list-view').style.display = 'none';
+        document.getElementById('create-view').style.display = 'block';
+        
         document.getElementById('form-title').innerText = `${c.Isim} Bilgilerini Güncelle`;
         document.getElementById('new-name').value = c.Isim;
-        document.getElementById('new-name').disabled = true; // İsmi değiştiremez (anahtar veri)
+        document.getElementById('new-name').disabled = true;
         document.getElementById('new-level').value = c.Level;
         document.getElementById('new-alignment').value = c.Alignment;
+        
+        // Sınıf ve Irk
         document.getElementById('sel-species').value = c.Species;
         document.getElementById('sel-class').value = c.Class;
-        updateClassUI();
+        updateClassUI(); // Bu fonksiyon yetenek ve büyü kutularını oluşturur
+
+        // Geçmiş
         document.getElementById('sel-bg').value = c.Background;
         updateBgUI();
-        
-        // Statları doldur
+
+        // Statlar
         ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"].forEach(k => {
             const id = `in-${k.substring(0,3).toLowerCase()}`;
             document.getElementById(id).value = c.Base_Stats[k];
         });
         updateStatDropdowns();
+
+        // Arkaplan Bonusları (Geri yükleme)
+        const bonusKeys = Object.keys(c.Stat_Bonuslari || {});
+        if (bonusKeys.length > 0) {
+            const plus2Key = bonusKeys.find(k => c.Stat_Bonuslari[k] === 2) || bonusKeys[0];
+            const plus1Key = bonusKeys.find(k => c.Stat_Bonuslari[k] === 1) || (bonusKeys.length > 1 ? bonusKeys[1] : bonusKeys[0]);
+            document.getElementById('bg-plus-2').value = plus2Key;
+            document.getElementById('bg-plus-1').value = plus1Key;
+        }
+
+        // Yetenekleri İşaretle
+        const skillChecks = document.querySelectorAll('input[name="skill"]');
+        skillChecks.forEach(cb => { if(c.Skills.includes(cb.value)) cb.checked = true; });
+
+        // Büyüleri İşaretle
+        if (c.Spellcasting) {
+            const cantripChecks = document.querySelectorAll('input[name="cantrip"]');
+            cantripChecks.forEach(cb => { if(c.Spellcasting.Cantrips.includes(cb.value)) cb.checked = true; });
+            const spellChecks = document.querySelectorAll('input[name="spell"]');
+            spellChecks.forEach(cb => { if(c.Spellcasting.Spells.includes(cb.value)) cb.checked = true; });
+        }
+
+        // Diller
+        const langs = c.Languages ? c.Languages.split(', ') : ["Common"];
+        if (langs.length > 1) document.getElementById('sel-lang-1').value = langs[1];
+        if (langs.length > 2) document.getElementById('sel-lang-2').value = langs[2];
+        
+        // Eğer Rogue ise ekstra dili de bul
+        const extraLangBox = document.getElementById('sel-extra-lang');
+        if (extraLangBox && c.Class === "Rogue") {
+            // Basitçe listenin sonundaki dili alalım (genelde ekstra dildir)
+            extraLangBox.value = langs[langs.length - 1];
+        }
+
+        // Ekipman
+        if (c.Equipment) {
+            document.getElementById('sel-armor').value = c.Equipment.Armor || "";
+            document.getElementById('sel-weapon').value = c.Equipment.Weapon || "";
+            document.getElementById('chk-shield').checked = !!c.Equipment.Shield;
+        }
     }
 
     async function openRuleModal(name) {
@@ -303,6 +421,184 @@
     }
 
     function closeRuleModal() { document.getElementById('rule-modal').style.display = 'none'; }
+
+    // LEVEL UP FONKSİYONLARI
+    async function openLevelUpModal() {
+        const c = currentCharData;
+        const targetInput = document.getElementById('lvl-up-target');
+        targetInput.value = c.Level + 1;
+        document.getElementById('level-up-modal').style.display = 'block';
+        
+        const subclassDiv = document.getElementById('subclass-selection');
+        const langDiv = document.getElementById('lvl-up-lang-selection');
+        
+        const checkRequirements = async (targetLvl) => {
+            // Subclass kontrolü
+            if (targetLvl >= 3 && !c.Subclass) {
+                subclassDiv.style.display = 'block';
+                const res = await fetch(`${API_URL}/class-subclasses/${c.Class}`);
+                const subclasses = await res.json();
+                document.getElementById('sel-subclass').innerHTML = subclasses.map(s => `<option value="${s}">${s}</option>`).join('');
+            } else { subclassDiv.style.display = 'none'; }
+
+            // Ranger Dil kontrolü (Level 2: Deft Explorer)
+            if (c.Class === "Ranger" && targetLvl >= 2 && c.Level < 2) {
+                langDiv.style.display = 'block';
+                const options = `<option value="">Seç...</option>
+                    <optgroup label="Standart">${LANGUAGES_STANDARD.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>
+                    <optgroup label="Rare">${LANGUAGES_RARE.map(l => `<option value="${l}">${l}</option>`).join('')}</optgroup>`;
+                document.getElementById('sel-lvl-lang-1').innerHTML = options;
+                document.getElementById('sel-lvl-lang-2').innerHTML = options;
+            } else { langDiv.style.display = 'none'; }
+        };
+
+        await checkRequirements(parseInt(targetInput.value));
+        targetInput.onchange = (e) => checkRequirements(parseInt(e.target.value));
+    }
+
+    function closeLevelUpModal() { document.getElementById('level-up-modal').style.display = 'none'; }
+
+    async function confirmLevelUp() {
+        const c = currentCharData;
+        const target = parseInt(document.getElementById('lvl-up-target').value);
+        const subclass = document.getElementById('subclass-selection').style.display === 'block' ? document.getElementById('sel-subclass').value : null;
+        
+        let extraLangs = [];
+        if (document.getElementById('lvl-up-lang-selection').style.display === 'block') {
+            const l1 = document.getElementById('sel-lvl-lang-1').value;
+            const l2 = document.getElementById('sel-lvl-lang-2').value;
+            if (l1) extraLangs.push(l1);
+            if (l2) extraLangs.push(l2);
+        }
+
+        if (target <= c.Level) return alert("Hedef seviye mevcut seviyeden büyük olmalıdır.");
+
+        const res = await fetch(`${API_URL}/character/level-up?name=${encodeURIComponent(c.Isim)}&target_level=${target}${subclass ? '&subclass=' + encodeURIComponent(subclass) : ''}${extraLangs.length > 0 ? '&extra_langs=' + encodeURIComponent(extraLangs.join(',')) : ''}`, { method: 'POST' });
+        
+        if (res.ok) {
+            alert("Tebrikler! Seviye atladınız.");
+            closeLevelUpModal();
+            showDetails(c.Isim);
+        } else {
+            alert("Seviye atlama sırasında bir hata oluştu.");
+        }
+    }
+
+    async function autoGenerateBalanced() {
+        if (!rulesData) await fetchRules();
+        
+        // 1. Seçili Sınıf/Irk var mı kontrol et, yoksa rastgele seç
+        let selClass = document.getElementById('sel-class').value;
+        let selSpecies = document.getElementById('sel-species').value;
+
+        const cls = rulesData.classes.find(c => c.name === selClass) || rulesData.classes[Math.floor(Math.random() * rulesData.classes.length)];
+        const spc = rulesData.species.find(s => s.name === selSpecies) || rulesData.species[Math.floor(Math.random() * rulesData.species.length)];
+        
+        document.getElementById('sel-class').value = cls.name;
+        document.getElementById('sel-species').value = spc.name;
+        updateClassUI();
+
+        // PHB 2024 Resmi Standard Array Önerileri
+        const recommendations = {
+            "Barbarian": { Strength: 15, Dexterity: 13, Constitution: 14, Intelligence: 10, Wisdom: 12, Charisma: 8 },
+            "Bard": { Strength: 8, Dexterity: 14, Constitution: 12, Intelligence: 13, Wisdom: 10, Charisma: 15 },
+            "Cleric": { Strength: 14, Dexterity: 8, Constitution: 13, Intelligence: 10, Wisdom: 15, Charisma: 12 },
+            "Druid": { Strength: 8, Dexterity: 12, Constitution: 14, Intelligence: 13, Wisdom: 15, Charisma: 10 },
+            "Fighter": { Strength: 15, Dexterity: 14, Constitution: 13, Intelligence: 8, Wisdom: 10, Charisma: 12 },
+            "Monk": { Strength: 12, Dexterity: 15, Constitution: 13, Intelligence: 10, Wisdom: 14, Charisma: 8 },
+            "Paladin": { Strength: 15, Dexterity: 10, Constitution: 13, Intelligence: 8, Wisdom: 12, Charisma: 14 },
+            "Ranger": { Strength: 12, Dexterity: 15, Constitution: 13, Intelligence: 8, Wisdom: 14, Charisma: 10 },
+            "Rogue": { Strength: 12, Dexterity: 15, Constitution: 13, Intelligence: 14, Wisdom: 10, Charisma: 8 },
+            "Sorcerer": { Strength: 10, Dexterity: 13, Constitution: 14, Intelligence: 8, Wisdom: 12, Charisma: 15 },
+            "Warlock": { Strength: 8, Dexterity: 14, Constitution: 13, Intelligence: 12, Wisdom: 10, Charisma: 15 },
+            "Wizard": { Strength: 8, Dexterity: 12, Constitution: 13, Intelligence: 15, Wisdom: 14, Charisma: 10 }
+        };
+
+        const allocation = recommendations[cls.name];
+        const primary = cls.primary_ability.split(' or ')[0].split(' and ')[0];
+
+        // 2. Sınıfa Uygun Arkaplan (Önerilen ana yeteneği içeren)
+        const bg = rulesData.backgrounds.find(b => b.ability_scores.includes(primary)) || rulesData.backgrounds[0];
+        document.getElementById('sel-bg').value = bg.name;
+        updateBgUI();
+
+        // 3. İsim (Eğer boşsa ata)
+        if (!document.getElementById('new-name').value.trim()) {
+            const names = ["Aelion", "Bregas", "Caelum", "Dorn", "Elowen", "Faelan", "Grog", "Hestia", "Ivor", "Jora"];
+            document.getElementById('new-name').value = names[Math.floor(Math.random() * names.length)] + " " + Math.floor(Math.random() * 99);
+        }
+
+        // 4. Önerilen Statları Uygula
+        ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"].forEach(s => {
+            const id = `in-${s.substring(0,3).toLowerCase()}`;
+            document.getElementById(id).value = allocation[s];
+        });
+        updateStatDropdowns();
+
+        // 5. Arkaplan Bonusları (+2 Ana Yetenek, +1 İkincil Yetenek)
+        const bgOptions = bg.ability_scores;
+        let plus2 = primary;
+        if (!bgOptions.includes(plus2)) plus2 = bgOptions[0];
+        let plus1 = bgOptions.find(o => o !== plus2 && (o === "Constitution" || o === "Dexterity")) || bgOptions.find(o => o !== plus2);
+        
+        document.getElementById('bg-plus-2').value = plus2;
+        document.getElementById('bg-plus-1').value = plus1;
+
+        // 6. Yetenekler ve Büyüler (İlk gelenleri seç)
+        const skillChecks = document.querySelectorAll('input[name="skill"]');
+        skillChecks.forEach(c => c.checked = false);
+        skillChecks.forEach((c, i) => { if(i < cls.skill_count) c.checked = true; });
+
+        if (cls.spellcasting) {
+            const cantripChecks = document.querySelectorAll('input[name="cantrip"]');
+            cantripChecks.forEach(c => c.checked = false);
+            cantripChecks.forEach((c, i) => { if(i < cls.spellcasting.cantrips_known) c.checked = true; });
+            const spellChecks = document.querySelectorAll('input[name="spell"]');
+            spellChecks.forEach(c => c.checked = false);
+            spellChecks.forEach((c, i) => { if(i < cls.spellcasting.spells_prepared) c.checked = true; });
+        }
+
+        // 7. Ekipman Optimizasyonu
+        const armorMap = {
+            "Barbarian": "Scale Mail", "Bard": "Leather Armor", "Cleric": "Chain Mail", 
+            "Druid": "Leather Armor", "Fighter": "Chain Mail", "Monk": "", 
+            "Paladin": "Chain Mail", "Ranger": "Scale Mail", "Rogue": "Leather Armor", 
+            "Sorcerer": "", "Warlock": "Leather Armor", "Wizard": ""
+        };
+        const weaponMap = {
+            "Barbarian": "Greataxe", "Bard": "Rapier", "Cleric": "Mace", 
+            "Druid": "Quarterstaff", "Fighter": "Longsword", "Monk": "Quarterstaff", 
+            "Paladin": "Longsword", "Ranger": "Longbow", "Rogue": "Rapier", 
+            "Sorcerer": "Dagger", "Warlock": "Dagger", "Wizard": "Quarterstaff"
+        };
+
+        document.getElementById('sel-armor').value = armorMap[cls.name] || "";
+        document.getElementById('sel-weapon').value = weaponMap[cls.name] || "Dagger";
+        
+        // Kalkan kontrolü (Sınıf kalkan kullanabiliyorsa ve tek elli silahı varsa)
+        const shieldClasses = ["Barbarian", "Cleric", "Druid", "Fighter", "Paladin", "Ranger"];
+        const twoHandedWeapons = ["Greataxe", "Greatsword", "Maul", "Longbow", "Light Crossbow"];
+        document.getElementById('chk-shield').checked = shieldClasses.includes(cls.name) && !twoHandedWeapons.includes(weaponMap[cls.name]);
+
+        if (cls.initial_choices) {
+            // Divine Order / Primal Order vb. için mantıklı seçimler
+            if (cls.name === "Cleric") document.getElementById('sel-class-choice').value = "Protector (Heavy Armor & Martial Weapons)";
+            else if (cls.name === "Druid") document.getElementById('sel-class-choice').value = "Warden (Medium Armor & Martial Weapons)";
+            else document.getElementById('sel-class-choice').selectedIndex = 0;
+        }
+
+        // 8. Diller (Sadece Standart dillerden rastgele iki farklı dil seç)
+        const availableStandard = [...LANGUAGES_STANDARD];
+        const lang1Idx = Math.floor(Math.random() * availableStandard.length);
+        const lang1 = availableStandard.splice(lang1Idx, 1)[0];
+        const lang2Idx = Math.floor(Math.random() * availableStandard.length);
+        const lang2 = availableStandard[lang2Idx];
+
+        document.getElementById('sel-lang-1').value = lang1;
+        document.getElementById('sel-lang-2').value = lang2;
+
+        alert(`${cls.name} sınıfı için PHB 2024 resmi önerilerine ve uygun ekipmanlara göre optimizasyon yapıldı!`);
+    }
 
     async function submitCharacter() {
         const name = document.getElementById('new-name').value.trim();
@@ -337,6 +633,8 @@
             }
         }
 
+        const extraLang = document.getElementById('sel-extra-lang') ? document.getElementById('sel-extra-lang').value : null;
+
         const data = {
             name: document.getElementById('new-name').value,
             level: parseInt(document.getElementById('new-level').value),
@@ -345,6 +643,7 @@
             char_class: className,
             background: document.getElementById('sel-bg').value,
             languages: "Common, " + document.getElementById('sel-lang-1').value + ", " + document.getElementById('sel-lang-2').value,
+            extra_languages: extraLang ? [extraLang] : [],
             base_stats: { Strength: parseInt(document.getElementById('in-str').value), Dexterity: parseInt(document.getElementById('in-dex').value), Constitution: parseInt(document.getElementById('in-con').value), Intelligence: parseInt(document.getElementById('in-int').value), Wisdom: parseInt(document.getElementById('in-wis').value), Charisma: parseInt(document.getElementById('in-cha').value) },
             stat_bonuses: { [document.getElementById('bg-plus-2').value]: 2, [document.getElementById('bg-plus-1').value]: 1 },
             chosen_skills: skills,
