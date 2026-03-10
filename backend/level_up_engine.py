@@ -83,8 +83,9 @@ def level_up(character_name, target_level):
             char['HP'] = char['HP_Level_1'] + hp_increase_per_level
             del char['HP_Level_1']
         
-        # Sınıf Özelliklerini ekle
-        new_features = features_map.get(char_class, {}).get(str(lvl), [])
+        # Sınıf Özelliklerini ekle (Meta özellikleri filtrele)
+        meta_features = ["Subclass Choice", "Subclass Feature", "Ability Score Improvement", "Epic Boon"]
+        new_features = [f for f in features_map.get(char_class, {}).get(str(lvl), []) if f not in meta_features]
         
         # Irk (Species) Özelliklerini ekle
         char_species = char.get('Species')

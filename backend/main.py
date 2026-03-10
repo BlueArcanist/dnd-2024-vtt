@@ -190,19 +190,82 @@ def create_character(data: CharacterCreate):
 
 @app.get("/rule-search")
 def search_rule(name: str):
-    clean_name = name.split(' (')[0].strip().split(': ')[-1]
+    orig_name = name.split(' (')[0].strip().split(': ')[-1]
+    clean_name = orig_name.upper()
+    
+    if "SUBCLASS" in clean_name and "FEATURE" in clean_name:
+        return {"description": "Bu bir alt sınıf gelişimidir. Detaylar için altın renkli yeteneklerinize bakınız."}
+    
     cache = load_json(CACHE_FILE)
     if clean_name in cache: return {"description": cache[clean_name]}
+
+    if not os.path.exists(PHB_REFERENCE):
+        return {"description": "Hata: PHB referans dosyası bulunamadı."}
+
     try:
-        prompt = f"PHB 2024 kurallarına göre '{clean_name}' özelliğini kısa ve öz açıkla (Nedir, Mekanik, Sınır). Türkçe ver."
-        # Güvenli komut çalıştırma (Shell Injection koruması)
-        cmd = ["gemini", "query", prompt, "--context", PHB_REFERENCE]
-        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8')
-        lines = result.stdout.strip().split('\n')
-        cleaned = '\n'.join([l for l in lines if not l.strip().lower().startswith(("i will", "searching", "reading", "checking"))]).strip()
-        if cleaned: cache[clean_name] = cleaned; save_json(CACHE_FILE, cache)
-        return {"description": cleaned or "Bulunamadı."}
-    except: return {"description": "Hata."}
+        with open(PHB_REFERENCE, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        
+        best_match_idx = -1
+        highest_score = 0
+        
+        for i, line in enumerate(lines):
+            l_strip = line.strip()
+            l_upper = l_strip.upper()
+            if not l_upper or len(l_upper) < 3: continue
+            
+            score = 0
+            # 1. Tam başlık eşleşmesi (En yüksek puan)
+            if l_upper == clean_name: score = 100
+            # 2. Seviye başlığı
+            elif l_upper.startswith("LEVEL") and clean_name in l_upper: score = 95
+            # 3. Özellik başlığı (Nokta veya iki nokta ile)
+            elif l_upper.startswith(clean_name + ".") or l_upper.startswith(clean_name + ":"): score = 90
+            # 4. OCR hatası içeren başlık (Similarity check)
+            elif clean_name[:5] in l_upper and len(l_upper) < len(clean_name) + 10:
+                score = 60
+            
+            # Negatif Puan: Tablo satırı olma ihtimali (Yanında kategori bilgileri varsa)
+            if any(x in l_upper for x in ["CATEGORY", "GENERAL", "EPIC BOON", "FIGHTING STYLE"]):
+                score -= 50
+
+            if score > highest_score:
+                highest_score = score
+                best_match_idx = i
+
+        if best_match_idx != -1:
+            found_content = []
+            # Başlığı ekle
+            found_content.append(lines[best_match_idx].strip())
+            
+            for i in range(best_match_idx + 1, min(best_match_idx + 40, len(lines))):
+                line = lines[i].strip()
+                if not line:
+                    if len(found_content) > 5: break
+                    continue
+                
+                # Durma Koşulu: Yeni bir büyük başlık veya alakasız tablo verisi
+                if line.isupper() and len(line) > 4 and clean_name not in line:
+                    # Eğer bu bir özellik açıklaması içindeki alt başlık değilse dur
+                    if not any(x in line for x in ["ACTION", "REST", "LEVEL"]):
+                        break
+                
+                # Sayfa numaralarını ve gereksiz rakamları temizle
+                if line.isdigit() and len(line) < 4: continue
+                
+                found_content.append(line)
+            
+            if found_content:
+                description = "\n".join(found_content)
+                # Küçük temizlik: Bazı OCR karakterlerini düzelt
+                description = description.replace('Da1"l<vision', 'Darkvision').replace('attacl<', 'attack').replace('maize', 'make')
+                cache[clean_name] = description
+                save_json(CACHE_FILE, cache)
+                return {"description": description}
+            
+        return {"description": f"'{orig_name}' için referans dosyada detaylı açıklama bulunamadı."}
+    except Exception as e:
+        return {"description": f"Arama Hatası: {str(e)}"}
 
 if __name__ == "__main__":
     import uvicorn
